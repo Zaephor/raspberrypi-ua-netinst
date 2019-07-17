@@ -26,9 +26,16 @@ jobs:
         - bc
         - wget
         - kmod
-#    install: apt-get update && apt-get install -y git curl bzip2 zip xz-utils gnupg kpartx dosfstools binutils bc wget kmod
     script:
-#    - bash -c 'apt-get update && apt-get install -y git curl bzip2 zip xz-utils gnupg kpartx dosfstools binutils bc wget kmod'
     - bash update.sh
     - bash build.sh
     - sudo bash buildroot.sh
+    deploy:
+      provider: releases
+      skip_cleanup: true
+      on:
+        tags: true
+      file_glob: true
+      file:
+      - "raspberrypi-ua-netinst*"
+      - "*/raspberrypi-ua-netinst*"
