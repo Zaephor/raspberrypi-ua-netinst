@@ -1,0 +1,32 @@
+---
+version: 0.0.{build}-{branch}
+
+
+image:
+- Ubuntu1804
+
+skip_commits:
+  files:
+    - '*.md'
+
+build_script:
+- sh: >-
+    apt-get update
+    apt-get install -y git curl bzip2 zip xz-utils gnupg kpartx dosfstools binutils bc wget kmod
+- sh: >-
+    bash update.sh
+    bash build.sh
+    bash buildroot.sh 
+
+artifacts:
+  - path: raspberrypi-ua-netinst*
+
+deploy:
+  - provider: GitHub
+    artifact: /raspberrypi-ua-netinst*
+    draft: false
+    prerelease: true
+    on:
+      branch: master
+      APPVEYOR_REPO_TAG: true
+

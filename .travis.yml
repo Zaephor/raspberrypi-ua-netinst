@@ -1,6 +1,34 @@
-language: bash
-sudo: false
-install: gem install mdl
-script:
- - bash -c 'shopt -s globstar; shellcheck **/*.sh'
- - mdl --verbose --rules '~MD013, ~MD036' .
+jobs:
+  include:
+  - stage: lintmd
+    language: bash
+    sudo: false
+    install: gem install mdl
+    script:
+    - bash -c 'shopt -s globstar; shellcheck **/*.sh'
+    - mdl --verbose --rules '~MD013, ~MD036' .
+  - stage: build
+    language: bash
+    sudo: true
+    addons:
+      apt:
+        update: true
+        packages:
+        - git
+        - curl
+        - bzip2
+        - zip
+        - xz-utils
+        - gnupg
+        - kpartx
+        - dosfstools
+        - binutils
+        - bc
+        - wget
+        - kmod
+#    install: apt-get update && apt-get install -y git curl bzip2 zip xz-utils gnupg kpartx dosfstools binutils bc wget kmod
+    script:
+#    - bash -c 'apt-get update && apt-get install -y git curl bzip2 zip xz-utils gnupg kpartx dosfstools binutils bc wget kmod'
+    - bash update.sh
+    - bash build.sh
+    - bash buildroot.sh
