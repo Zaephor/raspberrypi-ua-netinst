@@ -1,6 +1,6 @@
 jobs:
   include:
-  - stage: lintmd
+  - stage: lint
     language: bash
     sudo: false
     install: gem install mdl
@@ -31,4 +31,4 @@ jobs:
 #    - bash -c 'apt-get update && apt-get install -y git curl bzip2 zip xz-utils gnupg kpartx dosfstools binutils bc wget kmod'
     - bash update.sh
     - bash build.sh
-    - bash buildroot.sh
+    - sudo bash buildroot.sh
