@@ -1,6 +1,44 @@
-language: bash
-sudo: false
-install: gem install mdl
-script:
- - bash -c 'shopt -s globstar; shellcheck **/*.sh'
- - mdl --verbose --rules '~MD013, ~MD036' .
+jobs:
+  include:
+  - stage: lint
+    language: bash
+    sudo: false
+    install: gem install mdl
+    script:
+    - bash -c 'shopt -s globstar; shellcheck **/*.sh'
+    - mdl --verbose --rules '~MD013, ~MD036' .
+  - stage: build
+    language: bash
+    sudo: true
+    addons:
+      apt:
+        update: true
+        packages:
+        - git
+        - curl
+        - bzip2
+        - zip
+        - xz-utils
+        - gnupg
+        - kpartx
+        - dosfstools
+        - binutils
+        - bc
+        - wget
+        - kmod
+        - cpio
+    script:
+    - bash update.sh
+    - bash build.sh
+    - sudo bash buildroot.sh
+    deploy:
+      provider: releases
+      api_key:
+        secure: X6NTjkBulcoa6a1R7FnfR5s+P49b0qfRaA0PbmApsMC9/t0SzjuCU25KCZ7CFYtVYCUMYmGZU18w2df/tMojEVy9FCxI55zdtu/ZI59BcP14O9vKmOrA+O/Ejbu3r/TYCzep78bPt12R0gHs5GiuTiakuK6R9/2GgZvGoqGnBgIA0atLcJW+P5wow7Ld9yK4oOT9zgpdujuZrAN/lSnRaoCZD5LgSlO8fXqvtHeCcK8bNfmRDtmwPo0KhDWOuqfXNbx9yQybCk9+OUf/StgjXrYlFHmtXedj5LB1nTcfJdXEgxedkhAM/B7WFkPpxnbhmP0L53RokKoZ6ZJvhoLvc8e6N8khHi8BAIQ7fHSc9aA8JZrlumxN1NhQf8i4qsvjNJyRKux7xUwEhtGxGjeivDTCweXfqravKsnQQOIU7QKvOWBbG2Xhmk/dymV/iUCL2JNYLC/7PFdZEd+YxFbIBjZ0mps098hpX0/DI0va3TeVpAAtQg6g65FlatfLZzEoWGt8b1uAXxtiIiUxQ7XwTTusccIIikP06HhWa2EroTBsmeDr4R6romnIT1CBt2eAsV5z7Py/Lw00Sw9uyDEQxaU+jHTJf5pIohaulUODJ6Lux11BjbUCIKJPOSH7bKClO4e1EQSCn1hO6Cb+AaZ0+8bXNcr2dXaXyrFf9dNZyHc=
+      skip_cleanup: true
+      on:
+        tags: true
+      file_glob: true
+      file:
+      - "raspberrypi-ua-netinst*"
+      - "*/raspberrypi-ua-netinst*"
